@@ -1,0 +1,16 @@
+{
+  "name": "browser-agent-swarm",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Persistent Playwright browser swarm project, isolated from Tabby.",
+  "scripts": {
+    "test:swarm": "playwright test swarm.spec.ts --project=chromium",
+    "test:list": "playwright test --list",
+    "daily": "node run-daily.js",
+    "check:timeframes": "bash scripts/check-timeframes.sh"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "typescript": "^5.9.2"
+  }
+}

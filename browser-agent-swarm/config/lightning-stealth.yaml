@@ -1,0 +1,14 @@
+mode: lightning
+stealth:
+  userAgentRotation: true
+  viewport:
+    width: 1366
+    height: 768
+  locale: en-US
+  timezone: UTC
+  blockResources:
+    - media
+    - font
+runtime:
+  storageStatePath: /data/storageState.json
+  screenshotsPath: /data/screenshots

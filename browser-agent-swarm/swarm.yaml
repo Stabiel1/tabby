@@ -1,0 +1,14 @@
+agents:
+  - name: grok-browser-lightning
+    type: playwright
+    url: https://grok.x.ai
+    mode: lightning
+    prompt: "You are SuperGrok Lightning Agent. Use only affiliate links from AFFILIATE_LINKS env."
+  - name: video-gen-expert
+    task: "Daily: prompt Grok web -> generate InVideo-style script -> call InVideo web UI via Playwright."
+  - name: poster-expert
+    task: "Auto-post to X/Reddit/TikTok with UTM-tracked links."
+  - name: tracker-expert
+    task: "Scrape commission dashboards, update SQLite, and run A/B checks."
+
+schedule: "0 9 * * *"
