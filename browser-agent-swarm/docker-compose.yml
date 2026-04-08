@@ -1,0 +1,16 @@
+services:
+  swarm-core:
+    image: mcr.microsoft.com/playwright:v1.50.0-jammy
+    container_name: supergrok-swarm
+    restart: unless-stopped
+    privileged: true
+    working_dir: /app
+    volumes:
+      - ./:/app
+      - ./data:/data
+      - ./config:/config
+    environment:
+      DISPLAY: ":99"
+      GROK_WEB_URL: "${GROK_WEB_URL:-https://grok.x.ai}"
+      AFFILIATE_LINKS: "${AFFILIATE_LINKS:-{\"invideo\":\"YOUR_INV_LINK\",\"nordvpn\":\"YOUR_NORD_LINK\",\"avast\":\"YOUR_AVAST_LINK\"}}"
+    command: ["bash", "-lc", "npm install && tail -f /dev/null"]
