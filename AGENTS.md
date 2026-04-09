@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Instructions for **AI coding agents** and automation working in this repository (including Cursor Cloud). Human contributors should still read `CONTRIBUTING.md` and product docs.
+Instructions for **AI coding agents** and automation working in this repository (including Cursor Cloud). Human contributors should still read `CONTRIBUTING.md` and product docs; this file is a concise orientation for agents.
 
 ## Repository overview
 
@@ -12,13 +12,14 @@ This repo contains **two independent projects**. Do not mix their tooling or fil
 | **Browser Agent Swarm** | `/workspace/browser-agent-swarm` | npm + Playwright + Docker |
 
 - **Full path map:** `.cursor/PROJECT_MAP.md`
-- **Cursor rules (machine-facing):** `.cursor/rules/*.mdc` — always respect `project-layout.mdc` (Tabby vs swarm scoping).
+- **Cursor rules (machine-facing):** `.cursor/rules/*.mdc` — always respect `project-layout.mdc` (Tabby vs swarm scoping); scopes use `globs` or `alwaysApply` where noted.
 
 ### Scoping
 
 - **Tabby work:** `crates/`, `ee/`, `clients/`, `website/`, `python/`, `ci/`, root `Cargo.toml`, root `package.json` (pnpm workspace). Primary build: `cargo` from repo root.
 - **Swarm work:** Only under `browser-agent-swarm/`. Use **npm** there, not pnpm at the repo root.
 - If the task mentions swarm, Playwright, Grok, Browserbase, or Docker Compose for the browser agent, **default to `browser-agent-swarm/`** unless the user explicitly asks to integrate with Tabby.
+- Do not add swarm-only Docker or Playwright files at the Tabby repo root unless deliberately integrating.
 
 ## System dependencies (pre-installed in typical cloud snapshots)
 
@@ -63,10 +64,13 @@ If you see `database is locked` on startup, remove stale `dev-db.sqlite*` files 
 ## Browser Agent Swarm
 
 - **Install:** `cd browser-agent-swarm && npm install`
-- **Tests:** `npm run test:swarm` (Playwright; needs Docker and `.env` — see `browser-agent-swarm/README.md`)
+- **Env:** Copy `browser-agent-swarm/.env.example` to `.env` and fill in values as described in `browser-agent-swarm/README.md`.
+- **Stack / layout:** `browser-agent-swarm/docker-compose.yml`, `browser-agent-swarm/swarm.spec.ts`, optional schedule checks in `browser-agent-swarm/scripts/` and `browser-agent-swarm/swarm.yaml` (see `.cursor/PROJECT_MAP.md`).
+- **Tests:** `npm run test:swarm` (Playwright; needs Docker and `.env` — see `browser-agent-swarm/README.md`).
 - **Schedule check:** `npm run check:timeframes` (reads `swarm.yaml`)
 - **Daily runner / compose / Browserbase:** `browser-agent-swarm/README.md`
 - **Secrets:** Put keys in `.env` (or your env provider); never commit credentials.
+- Swarm uses its own `package.json`; do **not** run `pnpm install` at the repo root for swarm deps.
 
 ## Git submodules
 
