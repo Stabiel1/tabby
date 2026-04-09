@@ -4,6 +4,7 @@
   "private": true,
   "description": "Persistent Playwright browser swarm project, isolated from Tabby.",
   "scripts": {
+    "swarm:dev": "bash scripts/swarm-dev.sh",
     "test:swarm": "playwright test swarm.spec.ts --project=chromium",
     "test:list": "playwright test --list",
     "daily": "node run-daily.js",
