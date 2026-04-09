@@ -1,5 +1,7 @@
 # AGENTS.md
 
+Instructions for **automated coding agents** (for example Cursor Cloud) working in this repository. Human contributors can use `CONTRIBUTING.md` for Tabby setup and contribution flow.
+
 ## Cursor Cloud specific instructions
 
 ### Repository overview
@@ -13,6 +15,14 @@ This repo contains **two independent projects**:
 
 See `.cursor/PROJECT_MAP.md` for the full layout.
 
+### Scoping work
+
+- **Tabby** changes belong at the repo root (`crates/`, `ee/`, `clients/`, `website/`, etc.).
+- **Browser Agent Swarm** work stays under `browser-agent-swarm/` unless you are deliberately integrating with Tabby. If the task mentions swarm, Playwright, Browserbase, Grok, or Docker Compose in that context, default to `browser-agent-swarm/`.
+- Do not run `pnpm install` at the repo root for swarm dependencies; swarm uses `browser-agent-swarm/package.json` and npm there.
+
+Additional machine-readable rules live in `.cursor/rules/*.mdc`.
+
 ### System dependencies (pre-installed in snapshot)
 
 Tabby's Rust build needs these Ubuntu packages: `protobuf-compiler`, `libopenblas-dev`, `libssl-dev`, `pkg-config`, `cmake`, `libstdc++-14-dev`, `graphviz`, `sqlite3`.
@@ -22,6 +32,8 @@ A symlink is required for the C++ linker when using Clang:
 /usr/lib/x86_64-linux-gnu/libstdc++.so -> /usr/lib/gcc/x86_64-linux-gnu/14/libstdc++.so
 ```
 The snapshot already has this; if rebuilding the environment from scratch, recreate it with `sudo ln -sf`.
+
+For Tabby’s **Node.js / pnpm** workspace (VS Code extension, `tabby-ui`, turbo scripts): use **Node 18+** and **pnpm 9+** per `package.json` `engines`. Install workspace deps from the repo root with `pnpm install` before `pnpm lint` or `pnpm build`.
 
 ### Tabby — build / test / run
 
