@@ -1,5 +1,7 @@
 # AGENTS.md
 
+Instructions for **AI coding agents** and automated environments (for example Cursor Cloud) working in this repository. Human contributors may prefer `CONTRIBUTING.md` for full local setup; this file focuses on build commands, constraints, and where to edit.
+
 ## Cursor Cloud specific instructions
 
 ### Repository overview
@@ -13,14 +15,36 @@ This repo contains **two independent projects**:
 
 See `.cursor/PROJECT_MAP.md` for the full layout.
 
+### Scoping work (Tabby vs Swarm)
+
+- **Tabby** lives at the repo root: `Cargo.toml`, `crates/`, `ee/`, `clients/`, `website/`, `python/`, etc.
+- **Browser Agent Swarm** lives only under `browser-agent-swarm/`.
+
+When the task mentions **swarm**, **Playwright**, **Grok**, **Browserbase**, or **docker compose** for the browser agent, **scope edits to `browser-agent-swarm/`** unless the user explicitly asks to integrate with Tabby.
+
+Do **not** run `pnpm install` at the repo root for swarm dependencies; swarm uses `browser-agent-swarm/package.json`.
+
+### Quick navigation
+
+| Goal | Location |
+|------|----------|
+| Tabby CLI / server | `crates/tabby` |
+| Enterprise web / GraphQL | `ee/tabby-webserver` |
+| Swarm setup | `browser-agent-swarm/README.md` |
+| Swarm stack | `browser-agent-swarm/docker-compose.yml`, `browser-agent-swarm/swarm.spec.ts` |
+| Swarm env template | `browser-agent-swarm/.env.example` |
+| Agent-oriented Cursor rules | `.cursor/rules/*.mdc` |
+
 ### System dependencies (pre-installed in snapshot)
 
 Tabby's Rust build needs these Ubuntu packages: `protobuf-compiler`, `libopenblas-dev`, `libssl-dev`, `pkg-config`, `cmake`, `libstdc++-14-dev`, `graphviz`, `sqlite3`.
 
 A symlink is required for the C++ linker when using Clang:
+
 ```
 /usr/lib/x86_64-linux-gnu/libstdc++.so -> /usr/lib/gcc/x86_64-linux-gnu/14/libstdc++.so
 ```
+
 The snapshot already has this; if rebuilding the environment from scratch, recreate it with `sudo ln -sf`.
 
 ### Tabby — build / test / run
@@ -33,20 +57,22 @@ The snapshot already has this; if rebuilding the environment from scratch, recre
 - **Node build:** `pnpm build` (runs turbo across all workspace packages including `tabby-ui`).
 - **Update webserver UI assets:** `make update-ui` copies the built `tabby-ui` output into `ee/tabby-webserver/ui/`.
 - **Run server:** The default config tries to download `Nomic-Embed-Text` from HuggingFace (blocked by egress restrictions). To bypass this, create `$TABBY_ROOT/config.toml` with an HTTP embedding config:
+
   ```toml
   [model.embedding.http]
   kind = "llama.cpp/embedding"
   api_endpoint = "http://localhost:9999"
   model_name = "placeholder"
   ```
+
   Then run: `TABBY_ROOT=/tmp/tabby_data cargo run -- serve --port 8081`
+
 - **SQLite gotcha:** If you see "database is locked" on startup, delete any stale `dev-db.sqlite*` files under `$TABBY_ROOT/ee/` and retry with a fresh `TABBY_ROOT`.
 
 ### Browser Agent Swarm
 
 - **Install:** `cd browser-agent-swarm && npm install`
 - **Run tests:** `npm run test:swarm` (requires Docker and `.env` with credentials — see `browser-agent-swarm/README.md`).
-- Swarm uses its own `package.json`; do **not** run `pnpm install` at the repo root for swarm deps.
 
 ### Git submodules
 
