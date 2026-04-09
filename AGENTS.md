@@ -1,8 +1,8 @@
 # AGENTS.md
 
-## Cursor Cloud specific instructions
+Instructions for **Cursor Cloud** and other automated coding agents working in this repository. Humans may use it as a quick orientation; detailed contributor flow is in `CONTRIBUTING.md`.
 
-### Repository overview
+## Repository overview
 
 This repo contains **two independent projects**:
 
@@ -11,19 +11,34 @@ This repo contains **two independent projects**:
 | **Tabby** (AI coding assistant) | `/workspace` | Rust + Node.js (pnpm) |
 | **Browser Agent Swarm** | `/workspace/browser-agent-swarm` | Node.js (npm) + Playwright + Docker |
 
-See `.cursor/PROJECT_MAP.md` for the full layout.
+See `.cursor/PROJECT_MAP.md` for paths, navigation, and what not to mix between the two.
 
-### System dependencies (pre-installed in snapshot)
+### Scoping work
+
+- **Tabby** lives at the repository root: Rust (`Cargo.toml`, `crates/`, `ee/`), `clients/`, `website/`, `python/`, etc.
+- **Browser Agent Swarm** lives only under `browser-agent-swarm/`: Playwright, `docker-compose.yml`, cron-style daily runner, Browserbase / `browse` CLI documentation.
+
+When the user mentions “swarm”, “Playwright”, “Grok”, “Browserbase”, or “docker compose” for the browser agent, **scope work to `browser-agent-swarm/`** unless they explicitly ask to integrate with Tabby.
+
+Do not add swarm-only Docker or Playwright files at the Tabby repo root unless deliberately integrating.
+
+## Cursor / machine-readable rules
+
+Additional agent-oriented rules live in `.cursor/rules/*.mdc` (scopes via `globs` or `alwaysApply`).
+
+## System dependencies (pre-installed in snapshot)
 
 Tabby's Rust build needs these Ubuntu packages: `protobuf-compiler`, `libopenblas-dev`, `libssl-dev`, `pkg-config`, `cmake`, `libstdc++-14-dev`, `graphviz`, `sqlite3`.
 
 A symlink is required for the C++ linker when using Clang:
+
 ```
 /usr/lib/x86_64-linux-gnu/libstdc++.so -> /usr/lib/gcc/x86_64-linux-gnu/14/libstdc++.so
 ```
+
 The snapshot already has this; if rebuilding the environment from scratch, recreate it with `sudo ln -sf`.
 
-### Tabby — build / test / run
+## Tabby — build / test / run
 
 - **Build:** `cargo build` from repo root. Follow `CONTRIBUTING.md` for details.
 - **Tests:** `cargo test -- --skip golden` (golden tests download models and are very slow on CPU).
@@ -33,21 +48,26 @@ The snapshot already has this; if rebuilding the environment from scratch, recre
 - **Node build:** `pnpm build` (runs turbo across all workspace packages including `tabby-ui`).
 - **Update webserver UI assets:** `make update-ui` copies the built `tabby-ui` output into `ee/tabby-webserver/ui/`.
 - **Run server:** The default config tries to download `Nomic-Embed-Text` from HuggingFace (blocked by egress restrictions). To bypass this, create `$TABBY_ROOT/config.toml` with an HTTP embedding config:
+
   ```toml
   [model.embedding.http]
   kind = "llama.cpp/embedding"
   api_endpoint = "http://localhost:9999"
   model_name = "placeholder"
   ```
+
   Then run: `TABBY_ROOT=/tmp/tabby_data cargo run -- serve --port 8081`
+
 - **SQLite gotcha:** If you see "database is locked" on startup, delete any stale `dev-db.sqlite*` files under `$TABBY_ROOT/ee/` and retry with a fresh `TABBY_ROOT`.
 
-### Browser Agent Swarm
+## Browser Agent Swarm
 
 - **Install:** `cd browser-agent-swarm && npm install`
+- **Env:** Copy `browser-agent-swarm/.env.example` to `.env` and fill in values as described in `browser-agent-swarm/README.md`.
+- **Stack / layout:** `browser-agent-swarm/docker-compose.yml`, `browser-agent-swarm/swarm.spec.ts`, optional schedule checks in `browser-agent-swarm/scripts/` and `browser-agent-swarm/swarm.yaml` (see `PROJECT_MAP.md`).
 - **Run tests:** `npm run test:swarm` (requires Docker and `.env` with credentials — see `browser-agent-swarm/README.md`).
 - Swarm uses its own `package.json`; do **not** run `pnpm install` at the repo root for swarm deps.
 
-### Git submodules
+## Git submodules
 
 The repo includes `crates/llama-cpp-server/llama.cpp` as a submodule. Run `git submodule update --recursive --init` if it is not populated.
