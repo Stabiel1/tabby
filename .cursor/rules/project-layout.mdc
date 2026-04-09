@@ -1,0 +1,13 @@
+---
+description: Repository layout — Tabby vs browser-agent-swarm; read PROJECT_MAP for paths.
+alwaysApply: true
+---
+
+# Two projects in one repo
+
+- **Tabby** lives at the repository root: Rust (`Cargo.toml`, `crates/`, `ee/`), `clients/`, `website/`, `python/`, etc.
+- **Browser Agent Swarm** lives only under `browser-agent-swarm/`: Playwright, `docker-compose.yml`, cron-style daily runner, Browserbase/`browse` CLI documentation.
+
+When the user mentions “swarm”, “Playwright”, “Grok”, “Browserbase”, or “docker compose” for the browser agent, **scope work to `browser-agent-swarm/`** unless they explicitly ask to integrate with Tabby.
+
+See `.cursor/PROJECT_MAP.md` for the full map.

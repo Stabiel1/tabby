@@ -1,0 +1,15 @@
+---
+description: Browser Agent Swarm — Playwright, Docker, schedule, Browserbase CLI.
+globs: browser-agent-swarm/**/*
+---
+
+# browser-agent-swarm
+
+- **Package manager:** run `npm install` from `browser-agent-swarm/`, not the repo root.
+- **Tests:** `npm run test:swarm` / Playwright config in `browser-agent-swarm/playwright.config.ts`.
+- **Containers:** `browser-agent-swarm/docker-compose.yml`; persistent data under `browser-agent-swarm/data/`, config under `browser-agent-swarm/config/`.
+- **Daily job:** `browser-agent-swarm/run-daily.js`; cron example in `browser-agent-swarm/README.md`.
+- **Schedule sanity:** `npm run check:timeframes` (reads `swarm.yaml` cron).
+- **Browserbase / `browse` CLI:** documented in `browser-agent-swarm/README.md` optional section; keys go in env/` .env`, never commit secrets.
+
+Keep changes minimal and swarm-scoped; do not refactor Tabby crates unless the task requires it.

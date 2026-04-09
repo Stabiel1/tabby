@@ -1,0 +1,22 @@
+---
+description: Tabby monorepo — Rust workspace, clients, website; avoid touching swarm unless required.
+globs:
+  - Cargo.toml
+  - Cargo.lock
+  - crates/**/*
+  - ee/**/*
+  - clients/**/*
+  - experimental/**/*
+  - python/**/*
+  - website/**/*
+  - ci/**/*
+  - rules/**/*
+---
+
+# Tabby (main product)
+
+- **Primary build:** `cargo build` / `cargo test` from repo root; follow `CONTRIBUTING.md` for deps (protobuf, etc.).
+- **Node:** `package.json` at root is Turbo/workspace for website and tooling — not the browser swarm.
+- **Scope:** Prefer edits under `crates/`, `ee/`, `clients/`, `website/` as appropriate.
+
+Do not place Playwright swarm assets in Tabby paths unless explicitly requested; the swarm project is isolated under `browser-agent-swarm/`.
